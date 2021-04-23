@@ -58,10 +58,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\InteractWithSphere.cs" />
-    <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\Scripts\PlayerUI.cs" />
-    <Compile Include="Assets\Scripts\SpiningBox.cs" />
     <Compile Include="Assets\Scripts\DoorInteract.cs" />
+    <Compile Include="Assets\Scripts\SpiningBox.cs" />
+    <Compile Include="Assets\Scripts\PlayerUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
