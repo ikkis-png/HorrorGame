@@ -28,7 +28,7 @@ public class PlayerUI : MonoBehaviour
             }
         }
     }
-    public void SetTextStuff(TextAttributes text)
+    public void SetTextStuff(InteractiveInfo text)
     {
         fadeTimerOnText = fadeMultiplier;
         textDataInC.text = text.text;

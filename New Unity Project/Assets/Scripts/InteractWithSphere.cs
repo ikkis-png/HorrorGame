@@ -6,18 +6,32 @@ public interface InteractableWith
 {
     abstract void Trigger();
 
-    abstract TextAttributes PromptInfo();
+    abstract InteractiveInfo PromptInfo();
+    abstract PickupCase Pickup();   
 }
-public struct TextAttributes
+    public enum PickupCase
+{
+    None,
+    Hold,
+    Look,
+    Weapon
+
+}
+public struct InteractiveInfo
 {
     public string text;
     public Color color;
 }
 public class InteractWithSphere : MonoBehaviour, InteractableWith
 {
-    public TextAttributes PromptInfo()
+    public PickupCase Pickup()
     {
-        return new TextAttributes { color = Color.white, text = "Throw me!" };
+        return PickupCase.None;
+    }
+
+    public InteractiveInfo PromptInfo()
+    {
+        return new InteractiveInfo { color = Color.white, text = "Throw me!" };
     }
 
     public void Trigger()

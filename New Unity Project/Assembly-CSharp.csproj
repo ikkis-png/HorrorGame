@@ -58,9 +58,17 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\InteractWithSphere.cs" />
+    <Compile Include="Assets\Scripts\Pad.cs" />
     <Compile Include="Assets\Scripts\DoorInteract.cs" />
+    <Compile Include="Assets\Scripts\PadScreen.cs" />
+    <Compile Include="Assets\BeamScript.cs" />
+    <Compile Include="Assets\MeleeDamage.cs" />
+    <Compile Include="Assets\Scripts\Button.cs" />
+    <Compile Include="Assets\Scripts\PaperBehave.cs" />
     <Compile Include="Assets\Scripts\SpiningBox.cs" />
+    <Compile Include="Assets\DamageableBox.cs" />
     <Compile Include="Assets\Scripts\PlayerUI.cs" />
+    <Compile Include="Assets\HandAnim.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

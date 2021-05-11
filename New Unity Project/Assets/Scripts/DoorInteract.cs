@@ -10,9 +10,10 @@ public class DoorInteract : MonoBehaviour, InteractableWith
     float closedAngle;
     float lerp = 0;
     bool moving = false;
-    TextAttributes InteractableWith.PromptInfo()
+    bool locked = true;
+    InteractiveInfo InteractableWith.PromptInfo()
     {
-        return new TextAttributes { text = IsDoorOpen ? "Close the door!!!" : "Open the door", color = Color.white };
+        return DoorText();
     }
 
     // Start is called before the first frame update
@@ -21,15 +22,23 @@ public class DoorInteract : MonoBehaviour, InteractableWith
         closedAngle = transform.rotation.y;
     }
 
-    void InteractableWith.Trigger()
+    public void Trigger()
     {
+        if (!IsDoorOpen && locked) return;
         if (!moving)
         {
             IsDoorOpen = !IsDoorOpen;
             moving = true;
         }
     }
-
+    public void DoorLock()
+    {
+        locked = true;
+    }
+    public void DoorUnlock()
+    {
+        locked = false;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -50,5 +59,21 @@ public class DoorInteract : MonoBehaviour, InteractableWith
             Vector3 rot = pivotPoint.transform.localRotation.eulerAngles;
             pivotPoint.transform.localRotation = Quaternion.Euler(new Vector3(rot.x, Mathf.SmoothStep(closedAngle, openAngle, lerp), rot.z));
         }
+    }
+    InteractiveInfo DoorText()
+    {
+        if (locked)
+        {
+            return new InteractiveInfo { text = "It's locked!", color = Color.white };
+        }
+        else
+        {
+            return new InteractiveInfo { text = IsDoorOpen ? "Close the door!!!" : "Open the door", color = Color.white };
+        }
+    }
+
+    public PickupCase Pickup()
+    {
+        return PickupCase.None;
     }
 }
