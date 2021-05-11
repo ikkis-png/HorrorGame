@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MeleeDamage : MonoBehaviour
 {
+    //abstract delegate void HitStatic();
+    //public event HitStatic onHitEvent;
     Collider[] colliders;
     // Start is called before the first frame update
     void Start()

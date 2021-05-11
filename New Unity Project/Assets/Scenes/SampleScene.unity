@@ -2504,8 +2504,7 @@ MonoBehaviour:
   cam: {fileID: 1687258584}
   moveAccl: 40
   flashlight: {fileID: 1548028144}
-  hand: {fileID: 1231978638}
-  weapon: {fileID: 0}
+  weaponAnim: {fileID: 1231978640}
   referenceHoldTransform: {fileID: 438381770}
 --- !u!1 &1379881460
 GameObject:

@@ -11,17 +11,15 @@ public class Player : MonoBehaviour
     [SerializeField]GameObject flashlight;
     Vector3 moveInput = new Vector3(0, 0, 0);
     Vector3 forward;
-    HandAnim weaponAnim;
-
+    [SerializeField]HandAnim weaponAnim;
+    Collider objectLook;
     Rigidbody heldObject;
     InteractableWith heldInteractable;
-    [SerializeField] Transform hand;
-    [SerializeField] GameObject weapon;
     bool locked = false;
     [SerializeField] Transform referenceHoldTransform;
     Transform heldTransform;
-    bool btnDrop = Input.GetKeyDown(KeyCode.G);
-    bool btnInteract = Input.GetKeyDown(KeyCode.E);
+    KeyCode keyDrop = KeyCode.G;
+    KeyCode keyInteract = KeyCode.E;
     ConfigurableJoint handJoint;
     // Start is called before the first frame update
     void Start()
@@ -45,6 +43,8 @@ public class Player : MonoBehaviour
     {
         moveInput = Vector3.zero;
         InputWeapon();
+        
+        
         if (Input.GetKey(KeyCode.W))
         {
             moveInput += Vector3.forward;
@@ -81,7 +81,8 @@ public class Player : MonoBehaviour
         rb.AddForce(cam.transform.right * moveInput.x * moveAccl, ForceMode.Acceleration);
     }
     void RayCastFromPlayer()
-    {       
+    {
+        bool btnInteract = Input.GetKeyDown(keyInteract);
         if (heldInteractable != null || heldObject != null)
         {
            
@@ -103,7 +104,8 @@ public class Player : MonoBehaviour
             if (interact != null)
             {
                 if (btnInteract)
-                { 
+                {
+                    objectLook = hit.collider;
                     interact.Trigger();
                     PickupCase p = interact.Pickup();
 
@@ -124,15 +126,7 @@ public class Player : MonoBehaviour
                     }
                     if (p == PickupCase.Weapon)
                     {
-                        hit.collider.attachedRigidbody.isKinematic = true;
-                        hit.collider.attachedRigidbody.useGravity = false;
-                        Transform tPos =  hit.collider.GetComponent<BeamScript>().grabPosition;
-                        tPos.SetParent(hand);
-                        tPos.rotation = hand.rotation;
-                        tPos.position = hand.position;
-                        hit.collider.attachedRigidbody.gameObject.layer = 6;
-                        weapon = tPos.gameObject;
-                        weapon.layer = 6;
+                        weaponAnim.WeaponSet(hit.collider);
                         
                     }
 
@@ -144,11 +138,17 @@ public class Player : MonoBehaviour
         }
         
     }
+    float LimitMouseXRotation(float angle)
+    {
+        if (angle > 89 && angle < 180) return 89;
+        if (angle < 271 && angle > 180) return 271;
+        return angle;
+    }
     void MouseLook()
     {
         Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector3 rotation = cam.transform.rotation.eulerAngles;
-        cam.transform.rotation = Quaternion.Euler(rotation.x - mouseInput.y, rotation.y + mouseInput.x, rotation.z);
+        cam.transform.rotation = Quaternion.Euler(LimitMouseXRotation(rotation.x - mouseInput.y), rotation.y + mouseInput.x, rotation.z);
 
         forward = cam.transform.forward;
         forward = new Vector3(forward.x, 0, forward.z);
@@ -156,9 +156,10 @@ public class Player : MonoBehaviour
     }
     void InputWeapon()
     {
-        if (btnDrop && weapon != null)
+        bool btnDrop = Input.GetKeyDown(keyDrop);
+        if (btnDrop)
         {
-            weaponAnim.InputDropWeapon(weapon);
+            weaponAnim.WeaponDrop();
         }
     }
     
