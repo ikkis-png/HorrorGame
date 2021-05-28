@@ -29,7 +29,7 @@ public class FootstepSouds : MonoBehaviour
         {
             audioSource.pitch =  pitchBase + Random.value * .1f;
             int rnd = Random.Range(0, footsteps.Length);
-            audioSource.PlayOneShot(footsteps[rnd], .3f);
+            audioSource.PlayOneShot(footsteps[rnd], footstepVolume);
             footstepTimer = footstepTime;
         }
     }
