@@ -9,6 +9,9 @@ public class DoorInteract : MonoBehaviour, InteractableWith
     float openAngle = 90;
     float closedAngle;
     float lerp = 0;
+    AudioSource audioSource;
+    [SerializeField] AudioClip doorOpeningSound;
+    [SerializeField] AudioClip doorClosingSound;
     bool moving = false;
     bool locked = true;
     InteractiveInfo InteractableWith.PromptInfo()
@@ -19,6 +22,7 @@ public class DoorInteract : MonoBehaviour, InteractableWith
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         closedAngle = transform.rotation.y;
     }
 
@@ -27,6 +31,8 @@ public class DoorInteract : MonoBehaviour, InteractableWith
         if (!IsDoorOpen && locked) return;
         if (!moving)
         {
+            if(IsDoorOpen)audioSource.PlayOneShot(doorOpeningSound, 1);
+            if(!IsDoorOpen) audioSource.PlayOneShot(doorClosingSound, 1);
             IsDoorOpen = !IsDoorOpen;
             moving = true;
         }

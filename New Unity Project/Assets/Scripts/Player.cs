@@ -1,8 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Player : MonoBehaviour
+enum AttackState
+{
+    Idle,
+    Windip,
+    Swing
+}
+public class Player : MonoBehaviour, IDamageInfo
 {
     [SerializeField] Camera cam;
     [SerializeField] float moveAccl = 40;
@@ -156,6 +161,8 @@ public class Player : MonoBehaviour
     }
     void InputWeapon()
     {
+        if (Input.GetMouseButtonDown(0)) weaponAnim.WantToWindup();
+        if (Input.GetMouseButtonUp(0)) weaponAnim.WantToAttack();
         bool btnDrop = Input.GetKeyDown(keyDrop);
         if (btnDrop)
         {
@@ -189,5 +196,10 @@ public class Player : MonoBehaviour
             heldObject.velocity *= dist;
             heldObject.angularVelocity *= dist;
         }
+    }
+
+    public void DamageTaken(float damage, Vector3 position, Vector3 force)
+    {
+        rb.AddForce(force, ForceMode.Impulse);
     }
 }

@@ -13,6 +13,7 @@ public class Pad : MonoBehaviour
     [SerializeField] UnityEvent keypadScreenIdleEvent;
     [SerializeField] UnityEvent keypadScreenSuccEvent;
     [SerializeField] UnityEvent keypadScreenFailEvent;
+    public AudioSource audioSource;
     float errorTimer = 0;
     float activeTimer = 0;
     bool successBool = false;
@@ -43,7 +44,7 @@ public class Pad : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame

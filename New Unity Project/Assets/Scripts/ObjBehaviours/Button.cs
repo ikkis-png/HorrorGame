@@ -7,6 +7,7 @@ public class Button : MonoBehaviour ,InteractableWith
     // Start is called before the first frame update
     [SerializeField] char buttonChar = '0';
     [SerializeField] Pad keyPadCode;
+    [SerializeField] AudioClip buttonPress;
 
     public PickupCase Pickup()
     {
@@ -21,6 +22,7 @@ public class Button : MonoBehaviour ,InteractableWith
     public void Trigger()
     {
         keyPadCode.InputCode(buttonChar.ToString());
+        keyPadCode.audioSource.PlayOneShot(buttonPress, 1);
     }
 
     void Start()
