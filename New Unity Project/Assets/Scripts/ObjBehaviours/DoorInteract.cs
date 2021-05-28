@@ -13,7 +13,7 @@ public class DoorInteract : MonoBehaviour, InteractableWith
     [SerializeField] AudioClip doorOpeningSound;
     [SerializeField] AudioClip doorClosingSound;
     bool moving = false;
-    bool locked = true;
+    [SerializeField]bool locked = true;
     InteractiveInfo InteractableWith.PromptInfo()
     {
         return DoorText();
