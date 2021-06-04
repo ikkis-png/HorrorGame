@@ -10,8 +10,11 @@ enum AttackState
 public class Player : MonoBehaviour, IDamageInfo
 {
     [SerializeField] Camera cam;
-    [SerializeField] float moveAccl = 40;
+    float moveAccl = 40;
     Rigidbody rb;
+    [SerializeField] float walkingSpeed = 40;
+    [SerializeField]float runningSpeed = 80;
+    bool running;
     PlayerUI ui;
     [SerializeField]GameObject flashlight;
     Vector3 moveInput = new Vector3(0, 0, 0);
@@ -21,14 +24,21 @@ public class Player : MonoBehaviour, IDamageInfo
     Rigidbody heldObject;
     InteractableWith heldInteractable;
     bool locked = false;
+    bool alive = true;
     [SerializeField] Transform referenceHoldTransform;
     Transform heldTransform;
+    [SerializeField] float healthPointsMax = 100;
+    float currentHealth;
+    FootstepSouds soundSteps;
     KeyCode keyDrop = KeyCode.G;
     KeyCode keyInteract = KeyCode.E;
     ConfigurableJoint handJoint;
+    
     // Start is called before the first frame update
     void Start()
     {
+        soundSteps = GetComponent<FootstepSouds>();
+        currentHealth = healthPointsMax;
         ui = GetComponent<PlayerUI>();
         rb = GetComponent<Rigidbody>();
         
@@ -40,12 +50,31 @@ public class Player : MonoBehaviour, IDamageInfo
     // Update is called once per frame
     void Update()
     {
-        InputDoer();
-        MouseLook();
-        RayCastFromPlayer();
+        if (alive)
+        {
+            InputDoer();
+            MouseLook();
+            RayCastFromPlayer();
+            soundSteps.UpdateFootstep(rb.velocity.magnitude, running);
+        }
+
+    }
+    private void DyingCauseOfDeath()
+    {
+        alive = false;
+        rb.freezeRotation = false;
+        rb.AddTorque(cam.transform.right * 1000);
+        rb.drag = 5f;
+        rb.angularDrag = 0.1f;
+        rb.sleepThreshold = 0.1f;
+
+        weaponAnim.WeaponDrop();
+        DropHeld();
+        
     }
     void InputDoer()
     {
+        running = false;
         moveInput = Vector3.zero;
         InputWeapon();
         
@@ -66,6 +95,10 @@ public class Player : MonoBehaviour, IDamageInfo
         {
             moveInput += Vector3.right;
         }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            running = true;
+        }
         moveInput.Normalize();
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -74,16 +107,32 @@ public class Player : MonoBehaviour, IDamageInfo
     }
     private void FixedUpdate()
     {
-        ObjectHeld();
-        if (!locked)
+        
+        if (alive)
         {
-            MovementMethod();
+            ObjectHeld();
+            if (!locked)
+            {
+                MovementMethod();
+            }
+            Drag();
         }
+        
     }
     private void MovementMethod()
-    {
+    {        
+        moveAccl = running ? runningSpeed : walkingSpeed;
         rb.AddForce(forward * moveInput.z * moveAccl, ForceMode.Acceleration);
         rb.AddForce(cam.transform.right * moveInput.x * moveAccl, ForceMode.Acceleration);
+        
+    }
+    private void DropHeld()
+    {
+        if(heldInteractable != null) heldInteractable.Trigger();
+        heldInteractable = null;
+        heldObject = null;
+        locked = false;
+        if (heldTransform != null) heldTransform.SetParent(null);
     }
     void RayCastFromPlayer()
     {
@@ -93,11 +142,7 @@ public class Player : MonoBehaviour, IDamageInfo
            
             if (btnInteract)
             {
-                heldInteractable.Trigger();
-                heldInteractable = null;
-                heldObject = null;
-                locked = false;
-                if (heldTransform != null) heldTransform.SetParent(null);
+                DropHeld();
             }
             return;
         }
@@ -142,6 +187,12 @@ public class Player : MonoBehaviour, IDamageInfo
             }
         }
         
+    }
+    void Drag()
+    {
+        Vector3 vel = rb.velocity;
+        vel -= vel * 7 * Time.fixedDeltaTime;
+        rb.velocity = new Vector3(vel.x, rb.velocity.y, vel.z);
     }
     float LimitMouseXRotation(float angle)
     {
@@ -200,6 +251,25 @@ public class Player : MonoBehaviour, IDamageInfo
 
     public void DamageTaken(float damage, Vector3 position, Vector3 force)
     {
-        rb.AddForce(force, ForceMode.Impulse);
+        
+        if (alive)
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+            currentHealth -= damage;
+            Debug.Log(damage);
+            if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+                DyingCauseOfDeath();
+            }
+            else
+            {
+                ui.GotHurt(.5f);
+            }
+            
+        }
+        
+        
     }
+    
 }

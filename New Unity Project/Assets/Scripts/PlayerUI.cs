@@ -6,7 +6,15 @@ public class PlayerUI : MonoBehaviour
 {
     [SerializeField] UnityEngine.UI.Text textDataInC;
     [SerializeField]float fadeMultiplier = 2;
+    
     float fadeTimerOnText;
+
+    [SerializeField] UnityEngine.UI.Image bloodEffect;
+    [SerializeField] Color bloodEffectColor;
+    [SerializeField] Color bloodEffectFadeoutColor;
+    float hurtTimer = 0;
+    float hurtTime = 0;
+    bool gotHurt = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,11 +35,33 @@ public class PlayerUI : MonoBehaviour
                 fadeTimerOnText = 0;
             }
         }
+        UpdateBloodEffect();
     }
     public void SetTextStuff(InteractiveInfo text)
     {
         fadeTimerOnText = fadeMultiplier;
         textDataInC.text = text.text;
         textDataInC.color = text.color;
+    }
+    public void GotHurt(float amount)
+    {
+        hurtTimer = amount;
+        hurtTime = amount;
+        gotHurt = true;
+        bloodEffect.enabled = true;
+        bloodEffect.color = bloodEffectColor;
+    }
+    private void UpdateBloodEffect()
+    {
+        if (gotHurt)
+        {
+            hurtTimer -= Time.deltaTime;
+            bloodEffect.color = Color.Lerp(bloodEffectFadeoutColor, bloodEffectColor, hurtTimer / hurtTime);
+            if (hurtTimer <= 0)
+            {
+                bloodEffect.enabled = false;
+                gotHurt = false;
+            }
+        }
     }
 }

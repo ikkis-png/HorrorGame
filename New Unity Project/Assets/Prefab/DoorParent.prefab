@@ -83,7 +83,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3341064921370656457
 Transform:
@@ -176,6 +176,7 @@ MonoBehaviour:
   pivotPoint: {fileID: 3341064921145952430}
   doorOpeningSound: {fileID: 8300000, guid: 6997f75a47cd3874882e56c16534715b, type: 3}
   doorClosingSound: {fileID: 8300000, guid: 704425e1b91c8674bb7d1b650c11168b, type: 3}
+  locked: 0
 --- !u!54 &3341064921370656460
 Rigidbody:
   m_ObjectHideFlags: 0
